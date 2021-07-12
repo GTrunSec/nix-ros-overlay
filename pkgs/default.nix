@@ -1,48 +1,50 @@
 self: super: with super.lib; let
 
   pythonOverridesFor = python: python.override (old: {
-    packageOverrides = pySelf: pySuper: {
-      bson = pySelf.callPackage ./bson { };
+    packageOverrides = composeExtensions (old.packageOverrides or (_: _: { }))
+      (pySelf: pySuper: {
+        bson = pySelf.callPackage ./bson { };
 
-      catkin-pkg = pySelf.callPackage ./catkin-pkg { };
+        catkin-pkg = pySelf.callPackage ./catkin-pkg { };
 
-      colcon-cmake = pySelf.callPackage ./colcon/cmake.nix { };
+        colcon-cmake = pySelf.callPackage ./colcon/cmake.nix { };
 
-      colcon-core = pySelf.callPackage ./colcon/core.nix { };
+        colcon-core = pySelf.callPackage ./colcon/core.nix { };
 
-      colcon-library-path = pySelf.callPackage ./colcon/library-path.nix { };
+        colcon-library-path = pySelf.callPackage ./colcon/library-path.nix { };
 
-      colcon-metadata = pySelf.callPackage ./colcon/metadata.nix { };
+        colcon-metadata = pySelf.callPackage ./colcon/metadata.nix { };
 
-      colcon-package-selection = pySelf.callPackage ./colcon/package-selection.nix { };
+        colcon-package-selection = pySelf.callPackage ./colcon/package-selection.nix { };
 
-      colcon-pkg-config = pySelf.callPackage ./colcon/pkg-config.nix { };
+        colcon-pkg-config = pySelf.callPackage ./colcon/pkg-config.nix { };
 
-      colcon-python-setup-py = pySelf.callPackage ./colcon/python-setup-py.nix { };
+        colcon-python-setup-py = pySelf.callPackage ./colcon/python-setup-py.nix { };
 
-      colcon-recursive-crawl = pySelf.callPackage ./colcon/recursive-crawl.nix { };
+        colcon-recursive-crawl = pySelf.callPackage ./colcon/recursive-crawl.nix { };
 
-      colcon-ros = pySelf.callPackage ./colcon/ros.nix { };
+        colcon-ros = pySelf.callPackage ./colcon/ros.nix { };
 
-      colcon-test-result = pySelf.callPackage ./colcon/test-result.nix { };
+        colcon-test-result = pySelf.callPackage ./colcon/test-result.nix { };
 
-      empy = pySelf.callPackage ./empy { };
+        empy = pySelf.callPackage ./empy { };
 
-      rosdep = pySelf.callPackage ./rosdep { };
+        rosdep = pySelf.callPackage ./rosdep { };
 
-      rosdistro = pySelf.callPackage ./rosdistro { };
+        rosdistro = pySelf.callPackage ./rosdistro { };
 
-      rosinstall-generator = pySelf.callPackage ./rosinstall-generator { };
+        rosinstall-generator = pySelf.callPackage ./rosinstall-generator { };
 
-      rospkg = pySelf.callPackage ./rospkg { };
-    } // optionalAttrs pySuper.isPy3k {
-      # This has to be done here (rather than in rosPackages) because
-      # packageOverrides doesn't compose
-      wxPython = pySelf.wxPython_4_0;
-    };
+        rospkg = pySelf.callPackage ./rospkg { };
+      } // optionalAttrs pySuper.isPy3k {
+        # This has to be done here (rather than in rosPackages) because
+        # packageOverrides doesn't compose
+        wxPython = pySelf.wxPython_4_0;
+      });
   });
 
-in {
+in
+{
   colcon = with self.python3Packages; colcon-core.withExtensions [
     colcon-cmake
     colcon-core
